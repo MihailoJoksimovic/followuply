@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title '' %} - My Silex Application</title>
+
+        <link href="{{ asset('css/main.css') }}" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript">
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-XXXXXXXX-X']);
+            _gaq.push(['_trackPageview']);
+
+            (function() {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+        </script>
+
+        <script>
+            $ = { mixa : 5};
+        </script>
+
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+
+        <script>
+            _fuply          = {};
+            _fuply.data     = {};
+            _fuply.app_url  = 'http://followuply.dev/api/event/submit';
+
+            _fuply.j = window.jQuery.noConflict();
+
+            _fuply.data.url     = window.location.href;
+            _fuply.data.params  = {};
+
+            _fuply.submit = function() {
+                console.log("Submitting data: ");
+                console.log(_fuply.data);
+
+                _fuply.j.post(
+                        _fuply.app_url,
+                        _fuply.data
+                );
+            };
+        </script>
+
+        <script type="text/javascript">
+            _fuply.data.params  = {
+                email: 'tinzey@gmail.com'
+            };
+
+            _fuply.submit();
+        </script>
+    </head>
+    <body>
+        {% block content %}{% endblock %}
+    </body>
+</html>
