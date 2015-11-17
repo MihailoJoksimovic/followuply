@@ -19,13 +19,49 @@ $app->get('/', function () use ($app) {
 ->bind('homepage')
 ;
 
-$app->post('/api/event/submit', function(Request $request) use ($app) {
+$app->get('/a', function () use ($app) {
+    return $app['twig']->render('test-a.twig', array());
+});
+
+$app->get('/b', function () use ($app) {
+    return $app['twig']->render('test-b.twig', array());
+});
+
+$app->post("/api/path/add", function(Request $request) use ($app) {
+    $startUrl           = $request->request->get('startUrl');
+    $endUrl             = $request->request->get('endUrl');
+    $sendInterval       = $request->request->get('sendInterval');
+    $template           = $request->request->get('emailTemplate');
+
+    /** @var $db \Doctrine\DBAL\Connection */
+    $db = $app['db'];
+
+    $db->executeUpdate("INSERT INTO path SET start_url = ?, end_url = ?, send_interval = ?, email_template = ?", array(
+        $startUrl,
+        $endUrl,
+        $sendInterval,
+        $template
+    ));
+
+    return $app->json(array(
+        'success'   => true,
+        'message'   => 'Path added successfully'
+    ));
+})->bind('api.path.add');
+
+$app->get('/api/event/submit', function(Request $request) use ($app) {
     $url    = $request->get('url');
-    $params = $request->get('params');
+    $cid    = $request->get('cid');
+    $email  = $request->get('email');
+    $params = $request->get('params', array());
 
     $insertData = array(
         'url'   => $url,
-        'email' => $params['email']
+        'email' => $email,
+        'params'    => $params,
+        'client_id' => $cid,
+        'dt_added'  => new MongoDate(),
+        'processed' => false
     );
 
     /** @var $mongoCollection MongoCollection */

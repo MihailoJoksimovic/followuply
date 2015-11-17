@@ -1,7 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mixa
- * Date: 5/22/15
- * Time: 9:27 PM
- */ 
+
+
+require __DIR__.'/../vendor/autoload.php';
+
+use Symfony\Component\Console\Application;
+use Console\SendEmailsCommand;
+
+$application = new Application();
+$application->add(new SendEmailsCommand());
+$application->run();

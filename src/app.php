@@ -23,6 +23,17 @@ $app['twig'] = $app->extend('twig', function ($twig, $app) {
     return $twig;
 });
 
+$app->register(new Silex\Provider\DoctrineServiceProvider(), array(
+    'db.options' => array(
+        'driver'    => 'pdo_mysql',
+        'host'      => '127.0.0.1',
+        'dbname'    => 'followuply',
+        'user'      => 'followuply',
+        'password'  => 'followuply',
+        'charset'   => 'utf8',
+    )
+));
+
 $app['monolog.uncaught_errors'] = function($c) use ($app) {
     /** @var $log \Monolog\Logger */
     $log = new \Monolog\Logger('uncaught_errors');
@@ -54,7 +65,11 @@ $app['mongo.collection.web_events'] = function($c) {
     /** @var $db MongoDB */
     $db = $c['mongo.db'];
 
-    return $db->selectCollection($collectionName);
+    $collection = $db->selectCollection($collectionName);
+
+    $collection->ensureIndex(array('status' => 1));
+
+    return $collection;
 };
 
 

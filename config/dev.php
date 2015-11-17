@@ -16,3 +16,14 @@ $app->register(new MonologServiceProvider(), array(
 $app->register(new WebProfilerServiceProvider(), array(
     'profiler.cache_dir' => __DIR__.'/../var/cache/profiler',
 ));
+
+$app['dbs2312.options']  = array (
+    'mysql_readwrite' => array(
+        'driver'    => 'pdo_mysql',
+        'host'      => '127.0.0.1',
+        'dbname'    => 'followuply',
+        'user'      => 'root',
+        'password'  => 'asd12fgh',
+        'charset'   => 'utf8',
+    ),
+);
