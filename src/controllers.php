@@ -28,20 +28,21 @@ $app->get('/b', function () use ($app) {
 });
 
 $app->post("/api/path/add", function(Request $request) use ($app) {
-    $startUrl           = $request->request->get('startUrl');
-    $endUrl             = $request->request->get('endUrl');
-    $sendInterval       = $request->request->get('sendInterval');
-    $template           = $request->request->get('emailTemplate');
+    $pageA           = $request->request->get('pageA');
+    $pageB             = $request->request->get('pageB');
+    $timeFrame       = $request->request->get('timeFrame');
 
-    /** @var $db \Doctrine\DBAL\Connection */
-    $db = $app['db'];
+    /** @var $em \Doctrine\ORM\EntityManagerInterface */
+    $em = $app['db.orm.em'];
 
-    $db->executeUpdate("INSERT INTO path SET start_url = ?, end_url = ?, send_interval = ?, email_template = ?", array(
-        $startUrl,
-        $endUrl,
-        $sendInterval,
-        $template
-    ));
+    $route = new Followuply\Entity\Route();
+    $route->setPageA($pageA);
+    $route->setPageB($pageB);
+    $route->setTimeframe($timeFrame);
+
+    $em->persist($route);
+
+    $em->flush();
 
     return $app->json(array(
         'success'   => true,
@@ -50,9 +51,9 @@ $app->post("/api/path/add", function(Request $request) use ($app) {
 })->bind('api.path.add');
 
 $app->get('/api/event/submit', function(Request $request) use ($app) {
-    $url    = $request->get('url');
+    $url    = urldecode($request->get('url'));
     $cid    = $request->get('cid');
-    $email  = $request->get('email');
+    $email  = urldecode($request->get('email',''));
     $params = $request->get('params', array());
 
     $insertData = array(

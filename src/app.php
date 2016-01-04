@@ -34,6 +34,14 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
     )
 ));
 
+$app['db.orm.em'] = function ($app) {
+    $config = Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration(array(__DIR__."/Followuply"), $app['debug']);
+
+    $entityManager = \Doctrine\ORM\EntityManager::create($app['db.options'], $config);
+
+    return $entityManager;
+};
+
 $app['monolog.uncaught_errors'] = function($c) use ($app) {
     /** @var $log \Monolog\Logger */
     $log = new \Monolog\Logger('uncaught_errors');
