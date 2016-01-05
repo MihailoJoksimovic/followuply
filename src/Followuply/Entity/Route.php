@@ -23,12 +23,16 @@ class Route
     /** @Column(type="smallint") **/
     protected $timeframe;
 
+    /** @Column(type="string") **/
+    protected $emailTemplate;
+
     /** @Column(type="datetime",name="dt_added") **/
     protected $dtAdded;
 
     public function __construct()
     {
         $this->dtAdded = new \DateTime();
+        $this->emailTemplate = "This is default and totally useless email template";
     }
 
     /**
@@ -85,6 +89,22 @@ class Route
     public function getPageB()
     {
         return $this->pageB;
+    }
+
+    /**
+     * @param mixed $emailTemplate
+     */
+    public function setEmailTemplate($emailTemplate)
+    {
+        $this->emailTemplate = $emailTemplate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEmailTemplate()
+    {
+        return $this->emailTemplate;
     }
 
     static public function loadValidatorMetadata(ClassMetadata $metadata)

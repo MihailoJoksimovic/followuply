@@ -61,29 +61,35 @@ $app->post("/api/path/add", function(Request $request) use ($app) {
     ));
 })->bind('api.path.add');
 
-$app->get('/api/event/submit', function(Request $request) use ($app) {
+$app->post('/api/pageview/submit', function(Request $request) use ($app) {
     $url    = urldecode($request->get('url'));
-    $cid    = $request->get('cid');
     $email  = urldecode($request->get('email',''));
-    $params = $request->get('params', array());
+    $uid    = $request->get('uid');
 
-    $insertData = array(
-        'url'   => $url,
-        'email' => $email,
-        'params'    => $params,
-        'client_id' => $cid,
-        'dt_added'  => new MongoDate(),
-        'processed' => false
-    );
+    /** @var $em \Doctrine\ORM\EntityManagerInterface */
+    $em = $app['db.orm.em'];
 
-    /** @var $mongoCollection MongoCollection */
-    $mongoCollection = $app['mongo.collection.web_events'];
-    $mongoCollection->insert($insertData);
+    $pageview = new Followuply\Entity\PageView();
+    $pageview->setEmail($email);
+    $pageview->setUrl($url);
+    $pageview->setVisitorUid($uid);
+
+    $em->persist($pageview);
+
+    $em->flush();
 
     return $app->json(array(
         'success'   => true,
         'message'   => 'Thanks!'
     ));
+});
+
+$app->get('/test/a', function() use ($app) {
+    return $app['twig']->render('test-a.twig');
+});
+
+$app->get('/test/b', function() use ($app) {
+    return $app['twig']->render('test-b.twig');
 });
 
 $app->error(function (\Exception $e, Request $request, $code) use ($app) {
