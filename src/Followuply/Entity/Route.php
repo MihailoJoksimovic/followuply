@@ -2,6 +2,10 @@
 
 namespace Followuply\Entity;
 
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints as Assert;
+
+
 /**
  * @Entity @Table(name="route")
  */
@@ -81,6 +85,13 @@ class Route
     public function getPageB()
     {
         return $this->pageB;
+    }
+
+    static public function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('pageA', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('pageB', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('timeframe', new Assert\NotBlank());
     }
 
 

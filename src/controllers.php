@@ -40,6 +40,17 @@ $app->post("/api/path/add", function(Request $request) use ($app) {
     $route->setPageB($pageB);
     $route->setTimeframe($timeFrame);
 
+    /** @var $validator Symfony\Component\Validator\Validator\RecursiveValidator */
+    $validator = $app['validator'];
+    $errors = $validator->validate($route);
+
+    if (count($errors) > 0) {
+        return $app->json(array(
+            'success' => false,
+            'message' => 'An error has occurred. Please make sure you have filled out all the fields'
+        ));
+    }
+
     $em->persist($route);
 
     $em->flush();
