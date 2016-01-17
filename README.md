@@ -10,3 +10,6 @@ Run the following commands in order to get your environment up & running:
 
 When provisioning has finished, you should be able to access the project by visiting http://192.168.33.11/index_dev.php or http://192.168.33.11/
 
+You can build the DB by navigating to /var/www and running ``php bin/console orm:schema-tool:update --dump-sql --force``
+
+Enjoy!`
