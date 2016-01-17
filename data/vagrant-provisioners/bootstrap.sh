@@ -59,4 +59,6 @@ df -h
 cat /proc/swaps
 cat /proc/meminfo | grep Swap
 
-composer install
+/usr/local/bin/composer self-update
+
+cd /var/www; composer install
