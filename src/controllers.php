@@ -70,7 +70,8 @@ $app->post("/api/event/submit", function(Request $request) use ($app) {
         'uri'           => $request->get('uri'),
         'timestamp'     => $request->get('timestamp'),
         'visitor_uid'   => $request->get('visitor_uid'),
-        'app_id'        => $request->get('app_id')
+        'app_id'        => $request->get('app_id'),
+        'timestamp'     => time()
     ];
 
     /** @var $redis Redis */

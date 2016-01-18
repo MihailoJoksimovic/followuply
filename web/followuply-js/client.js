@@ -58,10 +58,15 @@ __followuplyopts = __followuplyopts || {};
         return (S4() + S4() + delim + S4() + delim + S4() + delim + S4() + delim + S4() + S4() + S4());
     };
 
-    function getCookie(name) {
-        var value = "; " + document.cookie;
-        var parts = value.split("; " + name + "=");
-        if (parts.length == 2) return parts.pop().split(";").shift();
+    function readCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        }
+        return null;
     }
 
     //
@@ -70,17 +75,23 @@ __followuplyopts = __followuplyopts || {};
 
     var email = __followuplyopts.email;
     var callbackFn = function() {};
-    var uid = getCookie('fuplyuid') || generateUid();
+    var uid = readCookie('fuplyuid');
+
+    if (!uid) {
+        console.log("Generating new uid");
+        var uid = generateUid();
+    }
 
     document.cookie = 'fuplyuid='+uid;
 
     var submitData = {
         email: email,
-        url: document.location.href,
-        uid: uid
+        uri: window.location.pathname.substr(1),
+        visitor_uid: uid,
+        app_id: 1
     };
 
-    ajax("http://192.168.33.11/api/pageview/submit", callbackFn, submitData);
+    ajax("http://192.168.33.11/api/event/submit", callbackFn, submitData);
 
 }(window, document));
 
