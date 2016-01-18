@@ -23,15 +23,21 @@ $app['twig'] = $app->extend('twig', function ($twig, $app) {
     return $twig;
 });
 
-$app->register(new Silex\Provider\DoctrineServiceProvider(), array(
-    'db.options' => array(
+if (file_exists(__DIR__.'/../config/db_config_local.php')) {
+    $db_options = require_once __DIR__.'/../config/db_config_local.php';
+} else {
+    $db_options = array(
         'driver'    => 'pdo_mysql',
         'host'      => '127.0.0.1',
         'dbname'    => 'followuply',
-        'user'      => 'followuply',
-        'password'  => 'followuply',
-        'charset'   => 'utf8',
-    )
+        'user'      => 'root',
+        'password'  => 'root',
+        'charset'   => 'utf8mb4',
+    );
+}
+
+$app->register(new Silex\Provider\DoctrineServiceProvider(), array(
+    'db.options' => $db_options
 ));
 
 $app['db.orm.em'] = function ($app) {
@@ -41,6 +47,9 @@ $app['db.orm.em'] = function ($app) {
 
     return $entityManager;
 };
+
+/** Shorthand for Entitymanager :) */
+$app['em'] = $app['db.orm.em'];
 
 $app['monolog.uncaught_errors'] = function($c) use ($app) {
     /** @var $log \Monolog\Logger */

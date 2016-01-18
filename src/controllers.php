@@ -84,6 +84,38 @@ $app->post('/api/pageview/submit', function(Request $request) use ($app) {
     ));
 });
 
+$app->get('/test/mixa', function() use ($app) {
+    /** @var $em \Doctrine\ORM\EntityManager */
+    $em = $app['em'];
+
+//    $scenario = new Followuply\Entity\Scenario();
+//    $scenario->setAppUid(12345);
+//    $scenario->setTimeframe(10);
+//    $em->persist($scenario);
+
+    /** @var $scenario \Followuply\Entity\Scenario */
+//    $scenario = $em->getRepository('Followuply\Entity\Scenario')->find(5);
+//    var_dump($scenario->getRoutes()->first()->getScenario());die();
+
+//    $route = new \Followuply\Entity\Route();
+//    $route->setPatternType(\Followuply\Entity\Route::ROUTE_TYPE_BEGINS_WITH);
+//    $route->setUriPattern('/upgrade');
+//    $route->setPosition(1);
+//    $route->setScenario($scenario);
+//    $em->persist($route);
+//    $em->flush();
+
+    /** @var $route \Followuply\Entity\Route */
+    $route = $em->getRepository('Followuply\Entity\Route')->find(8);
+
+    var_dump($route->getScenario()->getAppUid());die();
+
+//    $em->flush();
+
+//    $route = new Followuply\Entity\Route();
+
+});
+
 $app->get('/test/a', function() use ($app) {
     return $app['twig']->render('test-a.twig');
 });

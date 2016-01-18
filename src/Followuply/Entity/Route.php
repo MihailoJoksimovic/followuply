@@ -11,108 +11,127 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Route
 {
+    const ROUTE_TYPE_BEGINS_WITH = 1;
+    const ROUTE_TYPE_EQUALS      = 2;
+    const ROUTE_TYPE_REGEX       = 3;
+
     /** @Id @Column(type="integer") @GeneratedValue **/
     protected $id;
 
-    /** @Column(type="string",name="page_a") **/
-    protected $pageA;
+    /** @Column(type="string",name="uri_pattern") **/
+    protected $uriPattern;
 
-    /** @Column(type="string",name="page_b") **/
-    protected $pageB;
+    /** @Column(type="smallint",name="pattern_type") */
+    protected $patternType;
 
-    /** @Column(type="smallint") **/
-    protected $timeframe;
-
-    /** @Column(type="string") **/
-    protected $emailTemplate;
+    /** @Column(type="smallint") */
+    protected $position;
 
     /** @Column(type="datetime",name="dt_added") **/
     protected $dtAdded;
 
+    /**  @ManyToOne(targetEntity="Scenario", inversedBy="routes") */
+    protected $scenario;
+
     public function __construct()
     {
         $this->dtAdded = new \DateTime();
-        $this->emailTemplate = "This is default and totally useless email template";
+    }
+
+    /**
+     * @param mixed $dtAdded
+     */
+    public function setDtAdded($dtAdded)
+    {
+        $this->dtAdded = $dtAdded;
     }
 
     /**
      * @return mixed
      */
-    public function getId()
+    public function getDtAdded()
     {
-        return $this->id;
+        return $this->dtAdded;
     }
 
     /**
-     * @param mixed $timeframe
+     * @param mixed $id
      */
-    public function setTimeframe($timeframe)
+    public function setId($id)
     {
-        $this->timeframe = $timeframe;
+        $this->id = $id;
     }
 
     /**
-     * @return mixed
+     * @param mixed $position
      */
-    public function getTimeframe()
+    public function setPosition($position)
     {
-        return $this->timeframe;
-    }
-
-    /**
-     * @param mixed $pageA
-     */
-    public function setPageA($pageA)
-    {
-        $this->pageA = $pageA;
+        $this->position = $position;
     }
 
     /**
      * @return mixed
      */
-    public function getPageA()
+    public function getPosition()
     {
-        return $this->pageA;
+        return $this->position;
     }
 
     /**
-     * @param mixed $pageB
+     * @param mixed $uriPattern
      */
-    public function setPageB($pageB)
+    public function setUriPattern($uriPattern)
     {
-        $this->pageB = $pageB;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPageB()
-    {
-        return $this->pageB;
-    }
-
-    /**
-     * @param mixed $emailTemplate
-     */
-    public function setEmailTemplate($emailTemplate)
-    {
-        $this->emailTemplate = $emailTemplate;
+        $this->uriPattern = $uriPattern;
     }
 
     /**
      * @return mixed
      */
-    public function getEmailTemplate()
+    public function getUriPattern()
     {
-        return $this->emailTemplate;
+        return $this->uriPattern;
+    }
+
+    /**
+     * @param mixed $patternType
+     */
+    public function setPatternType($patternType)
+    {
+        $this->patternType = $patternType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPatternType()
+    {
+        return $this->patternType;
+    }
+
+    /**
+     * @param mixed $scenario
+     */
+    public function setScenario(Scenario $scenario)
+    {
+        $this->scenario = $scenario;
+    }
+
+    /**
+     * @return Scenario
+     */
+    public function getScenario()
+    {
+        return $this->scenario;
     }
 
     static public function loadValidatorMetadata(ClassMetadata $metadata)
     {
-        $metadata->addPropertyConstraint('pageA', new Assert\NotBlank());
-        $metadata->addPropertyConstraint('pageB', new Assert\NotBlank());
-        $metadata->addPropertyConstraint('timeframe', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('patternType', new Assert\Range(array('min' => 1, 'max' => 3)));
+        $metadata->addPropertyConstraint('uriPattern', new Assert\NotNull());
+        $metadata->addPropertyConstraint('position', new Assert\NotNull());
     }
 
+}
 
-} 
