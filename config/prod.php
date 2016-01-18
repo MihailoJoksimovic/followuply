@@ -17,3 +17,8 @@ $app['mongo.host']      = '127.0.0.1';
 $app['mongo.db_name']   = 'followuply';
 
 $app['asset_path'] = 'http://followuply.dev';
+
+$app['redis.host'] = '127.0.0.1';
+$app['redis.port'] = 6379;
+
+

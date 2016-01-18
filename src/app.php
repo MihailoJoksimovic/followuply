@@ -89,5 +89,11 @@ $app['mongo.collection.web_events'] = function($c) {
     return $collection;
 };
 
+$app['redis.client'] = function($c) {
+    $redis = new Redis();
+    $redis->connect($c['redis.host'], $c['redis.port']);
+
+    return $redis;
+};
 
 return $app;

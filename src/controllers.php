@@ -61,6 +61,28 @@ $app->post("/api/path/add", function(Request $request) use ($app) {
     ));
 })->bind('api.path.add');
 
+$app->post("/api/event/submit", function(Request $request) use ($app) {
+    // I'll assume that data is valid
+
+    $key = 'events';
+
+    $event = [
+        'uri'           => $request->get('uri'),
+        'timestamp'     => $request->get('timestamp'),
+        'visitor_uid'   => $request->get('visitor_uid'),
+        'app_id'        => $request->get('app_id')
+    ];
+
+    /** @var $redis Redis */
+    $redis = $app['redis.client'];
+
+    $redis->lPush($key, json_encode($event));
+
+    return new JsonResponse(array(
+        'success' => true
+    ));
+});
+
 $app->post('/api/pageview/submit', function(Request $request) use ($app) {
     $url    = urldecode($request->get('url'));
     $email  = urldecode($request->get('email',''));
