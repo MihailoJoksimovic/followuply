@@ -62,3 +62,17 @@ cat /proc/meminfo | grep Swap
 /usr/local/bin/composer self-update
 
 cd /var/www; composer install
+
+mysql -uroot -proot -e "CREATE DATABASE IF NOT EXISTS followuply"
+
+echo "<?php
+
+return array(
+    'driver'    => 'pdo_mysql',
+    'host'      => '127.0.0.1',
+    'dbname'    => 'followuply',
+    'user'      => 'root',
+    'password'  => 'root',
+    'charset'   => 'utf8mb4',
+);" > /var/www/config/db_config_local.php
+
