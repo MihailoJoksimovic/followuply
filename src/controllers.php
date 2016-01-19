@@ -147,6 +147,21 @@ $app->get('/test/b', function() use ($app) {
     return $app['twig']->render('test-b.twig');
 });
 
+$app->get('/dashboard', function() use ($app) {
+    return "Welcome to Dashboard!";
+});
+
+$app->get('/dashboard/login_check', function() use ($app) {
+    return "Welcome to Admin!";
+});
+
+$app->get('/login', function(Request $request) use ($app) {
+    return $app['twig']->render('login.twig', array(
+        'error'         => $app['security.last_error']($request),
+        'last_username' => $app['session']->get('_security.last_username'),
+    ));
+});
+
 $app->error(function (\Exception $e, Request $request, $code) use ($app) {
     if ($app['debug']) {
         return;

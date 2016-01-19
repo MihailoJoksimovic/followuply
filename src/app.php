@@ -23,6 +23,26 @@ $app['twig'] = $app->extend('twig', function ($twig, $app) {
     return $twig;
 });
 
+$app->register(new Silex\Provider\SessionServiceProvider());
+
+$app->register(new Silex\Provider\SecurityServiceProvider(), array(
+    'security.firewalls' => array(
+        'login' => array(
+            'pattern' => '^/login$',
+        ),
+        'dashboard' => array(
+            'pattern' => '^/dashboard',
+            'form' => array('login_path' => '/login', 'check_path' => '/dashboard/login_check'),
+            'logout' => array('logout_path' => '/dashboard/logout', 'invalidate_session' => true),
+            'users' => array(
+                // raw password is foo
+                'admin' => array('ROLE_ADMIN', '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
+                'mixa' => array('ROLE_USER', '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
+            ),
+        ),
+    )
+));
+
 if (file_exists(__DIR__.'/../config/db_config_local.php')) {
     $db_options = require_once __DIR__.'/../config/db_config_local.php';
 } else {
