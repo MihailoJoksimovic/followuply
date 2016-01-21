@@ -34,11 +34,9 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), array(
             'pattern' => '^/dashboard',
             'form' => array('login_path' => '/login', 'check_path' => '/dashboard/login_check'),
             'logout' => array('logout_path' => '/dashboard/logout', 'invalidate_session' => true),
-            'users' => array(
-                // raw password is foo
-                'admin' => array('ROLE_ADMIN', '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
-                'mixa' => array('ROLE_USER', '5FZ2Z8QIkA7UTZ4BYkoC+GsReLf569mSKDsfods6LYQ8t+a8EW9oaircfMpmaLbPBh4FOBiiFyLfuZmTSUwzZg=='),
-            ),
+            'users' => function() use ($app) {
+                return $app['service.user_provider'];
+             },
         ),
     ),
     'security.role_hierarchy' => array(
@@ -118,5 +116,14 @@ $app['redis.client'] = function($c) {
 
     return $redis;
 };
+
+$app['service.user_provider'] = function($app) {
+    $em = $app['em'];
+
+    $userProvider = new Followuply\Security\UserProvider($em);
+
+    return $userProvider;
+};
+
 
 return $app;
