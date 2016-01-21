@@ -24,7 +24,8 @@
         "doctrine/dbal": "~2.2",
         "dflydev/doctrine-orm-service-provider": "~2.0",
         "symfony/yaml": "^3.0",
-        "predis/predis": "^1.0"
+        "predis/predis": "^1.0",
+        "symfony/http-kernel": "^2.8"
     },
     "autoload": {
         "psr-0": { "": "src/" }
