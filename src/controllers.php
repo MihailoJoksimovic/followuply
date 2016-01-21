@@ -146,7 +146,7 @@ $app->get('/test/b', function() use ($app) {
 
 $app->get('/dashboard', function() use ($app) {
     return "Welcome to Dashboard!";
-});
+})->bind('dashboard');
 
 $app->get('/dashboard/login_check', function() use ($app) {
     return "Welcome to Admin!";
@@ -158,6 +158,42 @@ $app->get('/login', function(Request $request) use ($app) {
         'last_username' => $app['session']->get('_security.last_username'),
     ));
 });
+
+$app->match('/register', function(Request $request) use ($app) {
+    $user = new \Followuply\Entity\User();
+    $user->setEmail('aaa');
+
+    /** @var $form Symfony\Component\Form\Form */
+    $form = $app['form.factory']->createBuilder('form', $user)
+        ->add('email', 'email')
+        ->add('password', 'password')
+        ->add('save', \Symfony\Component\Form\Extension\Core\Type\SubmitType::class, array('label' => 'Register'))
+        ->getForm();
+
+    $form->handleRequest($request);
+
+    if (!$form->isSubmitted() || !$form->isValid()) {
+        // display the form
+        return $app['twig']->render('register.twig', array('form' => $form->createView()));
+    }
+
+    /** @var $service \Followuply\Security\UserRegistrationServiceInterface */
+    $service = $app['service.user_registration_service'];
+
+    try {
+        $service->register($user);
+
+        // TODO: Log In user after successful registration!
+
+        return $app->redirect('dashboard');
+    } catch (\Followuply\Security\UserAlreadyExistsException $e) {
+        $form->addError(new \Symfony\Component\Form\FormError('Email already exists'));
+
+        // display the form
+        return $app['twig']->render('register.twig', array('form' => $form->createView()));
+    }
+
+})->bind('register');
 
 $app->error(function (\Exception $e, Request $request, $code) use ($app) {
     if ($app['debug']) {

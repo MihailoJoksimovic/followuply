@@ -68,7 +68,7 @@ $app->register(new \Silex\Provider\TranslationServiceProvider(), array(
     'locale_fallbacks' => array('en'),
 ));
 
-$app['db.orm.em'] = function ($app) {
+$app['db.orm.em'] = function ($app){
     $config = Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration(array(__DIR__."/Followuply"), $app['debug']);
 
     $entityManager = \Doctrine\ORM\EntityManager::create($app['db.options'], $config);
@@ -77,7 +77,9 @@ $app['db.orm.em'] = function ($app) {
 };
 
 /** Shorthand for Entitymanager :) */
-$app['em'] = $app['db.orm.em'];
+$app['em'] = function($app) {
+    return $app['db.orm.em'];
+};
 
 $app['monolog.uncaught_errors'] = function($c) use ($app) {
     /** @var $log \Monolog\Logger */
@@ -124,6 +126,14 @@ $app['redis.client'] = function($c) {
     return $redis;
 };
 
+$app['orm.repository.user'] = function($app) {
+    $em = $app['em'];
+
+    $repository = $em->getRepository('Followuply\Entity\User');
+
+    return $repository;
+};
+
 $app['service.user_provider'] = function($app) {
     $em = $app['em'];
 
@@ -132,5 +142,14 @@ $app['service.user_provider'] = function($app) {
     return $userProvider;
 };
 
+$app['service.user_registration_service'] = function($app) {
+    $userRepository = $app['orm.repository.user'];
+    $logger = $app['logger'];
+    $encoder = $app['security.encoder_factory'];
+
+    $service = new \Followuply\Security\UserRegistrationService($userRepository, $encoder, $logger);
+
+    return $service;
+};
 
 return $app;

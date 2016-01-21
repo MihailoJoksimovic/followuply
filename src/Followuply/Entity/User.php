@@ -4,11 +4,16 @@
  */
 
 namespace Followuply\Entity;
+use Symfony\Component\BrowserKit\Request;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @Entity @Table(name="user")
+ * @Entity(repositoryClass="Followuply\Entity\UserRepository")
+ * @Table(name="user")
  */
 class User implements UserInterface
 {
@@ -131,5 +136,11 @@ class User implements UserInterface
         $this->password = "";
     }
 
+    static public function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('email', new Assert\Email());
+        $metadata->addPropertyConstraint('password', new Assert\Length(array('min' => 3)));
+    }
 
 }
+
