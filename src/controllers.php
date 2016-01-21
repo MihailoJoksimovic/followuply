@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Debug\ErrorHandler;
 use Symfony\Component\Debug\ExceptionHandler;
+use Followuply\Model\Event;
 
 //Request::setTrustedProxies(array('127.0.0.1'));
 
@@ -63,21 +64,9 @@ $app->post("/api/path/add", function(Request $request) use ($app) {
 
 $app->post("/api/event/submit", function(Request $request) use ($app) {
     // I'll assume that data is valid
+    $event  = Event::fromRequest($request);
 
-    $key = 'events';
-
-    $event = [
-        'uri'           => $request->get('uri'),
-        'timestamp'     => $request->get('timestamp'),
-        'visitor_uid'   => $request->get('visitor_uid'),
-        'app_id'        => $request->get('app_id'),
-        'timestamp'     => time()
-    ];
-
-    /** @var $redis Redis */
-    $redis = $app['redis.client'];
-
-    $redis->lPush($key, json_encode($event));
+    $app['redis.client']->lPush(Event::REDIS_KEY, json_encode($event));
 
     return new JsonResponse(array(
         'success' => true
