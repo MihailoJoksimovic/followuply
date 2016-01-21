@@ -61,6 +61,13 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
     'db.options' => $db_options
 ));
 
+$app->register(new \Silex\Provider\CsrfServiceProvider());
+$app->register(new \Silex\Provider\FormServiceProvider());
+$app->register(new \Silex\Provider\TranslationServiceProvider(), array(
+    'locale'    => 'en',
+    'locale_fallbacks' => array('en'),
+));
+
 $app['db.orm.em'] = function ($app) {
     $config = Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration(array(__DIR__."/Followuply"), $app['debug']);
 
