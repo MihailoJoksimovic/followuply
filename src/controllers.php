@@ -100,6 +100,14 @@ $app->get('/test/mixa', function() use ($app) {
     /** @var $em \Doctrine\ORM\EntityManager */
     $em = $app['em'];
 
+    $user = new Followuply\Entity\User();
+
+    // find the encoder for a UserInterface instance
+    $encoder = $app['security.encoder_factory']->getEncoder($user);
+
+// compute the encoded password for foo
+    $password = $encoder->encodePassword('foo', $user->getSalt());
+var_dump($password);die();
 //    $scenario = new Followuply\Entity\Scenario();
 //    $scenario->setAppUid(12345);
 //    $scenario->setTimeframe(10);
