@@ -25,7 +25,8 @@
         "dflydev/doctrine-orm-service-provider": "~2.0",
         "symfony/yaml": "^3.0",
         "predis/predis": "^1.0",
-        "symfony/http-kernel": "^2.8"
+        "symfony/http-kernel": "^2.8",
+        "oldsound/rabbitmq-bundle": "~1.6"
     },
     "autoload": {
         "psr-0": { "": "src/" }
